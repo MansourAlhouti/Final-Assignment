@@ -1,0 +1,473 @@
+# Guest class represents a customer visiting the theme park
+class Guest:
+    def __init__(self, guest_ID, name, email, phone):
+        # Initialize guest attributes: ID, name, email, phone, purchase history, and reservations
+        self.guest_ID = guest_ID
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.purchase_history = []  # Stores the purchase history of the guest
+        self.reservation_list = []  # Stores the list of reservations for the guest
+
+    # Getter for guest ID
+    def get_guest_id(self):
+        return self.guest_ID
+
+    # Setter for guest ID
+    def set_guest_id(self, guest_id):
+        self.guest_ID = guest_id
+
+    # Getter for guest name
+    def get_name(self):
+        return self.name
+
+    # Setter for guest name
+    def set_name(self, name):
+        self.name = name
+
+    # Getter for email
+    def get_email(self):
+        return self.email
+
+    # Setter for email
+    def set_email(self, email):
+        self.email = email
+
+    # Getter for phone
+    def get_phone(self):
+        return self.phone
+
+    # Setter for phone
+    def set_phone(self, phone):
+        self.phone = phone
+
+    # Getter for the list of reservations
+    def get_reservation_list(self):
+        return self.reservation_list
+
+    # Displays guest details
+    def display_details(self):
+        print(f"Guest ID: {self.guest_ID}, Name: {self.name}, Email: {self.email}, Phone: {self.phone}")
+
+    # Adds a new reservation to the guest's reservation list
+    def add_reservation(self, reservation):
+        self.reservation_list.append(reservation)
+
+
+# Reservation class represents a booking made by the guest
+class Reservation:
+    def __init__(self, reservation_ID, guest, ticket, visit_date, status):
+        # Initialize reservation details
+        self.reservation_ID = reservation_ID
+        self.guest = guest  # Links the reservation to a specific guest
+        self.ticket = ticket  # Ticket associated with the reservation
+        self.visit_date = visit_date  # Date of the visit
+        self.status = status  # Status of the reservation (e.g., confirmed, canceled)
+
+    # Getter for reservation ID
+    def get_reservation_id(self):
+        return self.reservation_ID
+
+    # Setter for reservation ID
+    def set_reservation_id(self, reservation_id):
+        self.reservation_ID = reservation_id
+
+    # Getter for the guest
+    def get_guest(self):
+        return self.guest
+
+    # Setter for the guest
+    def set_guest(self, guest):
+        self.guest = guest
+
+    # Getter for the ticket
+    def get_ticket(self):
+        return self.ticket
+
+    # Setter for the ticket
+    def set_ticket(self, ticket):
+        self.ticket = ticket
+
+    # Getter for the visit date
+    def get_visit_date(self):
+        return self.visit_date
+
+    # Setter for the visit date
+    def set_visit_date(self, date):
+        self.visit_date = date
+
+    # Getter for the reservation status
+    def get_status(self):
+        return self.status
+
+    # Setter for the reservation status
+    def set_status(self, status):
+        self.status = status
+
+    # Displays reservation details
+    def display_details(self):
+        print(f"Reservation ID: {self.reservation_ID}, Guest: {self.guest.get_name()}, Ticket: {self.ticket.type}, Visit Date: {self.visit_date}, Status: {self.status}")
+
+    # Updates the reservation status
+    def update_status(self, new_status):
+        self.status = new_status
+
+
+# Ticket class represents a theme park ticket
+class Ticket:
+    def __init__(self, ticket_ID, ticket_type, price, validity, discount):
+        # Initialize ticket details
+        self.ticket_ID = ticket_ID
+        self.type = ticket_type  # Type of ticket (e.g., VIP, regular)
+        self.price = price  # Ticket price
+        self.validity = validity  # Ticket validity period
+        self.discount = discount  # Discount percentage on the ticket
+
+    # Getter for ticket ID
+    def get_ticket_id(self):
+        return self.ticket_ID
+
+    # Setter for ticket ID
+    def set_ticket_id(self, ticket_id):
+        self.ticket_ID = ticket_id
+
+    # Getter for ticket price
+    def get_price(self):
+        return self.price
+
+    # Setter for ticket price
+    def set_price(self, price):
+        self.price = price
+
+    # Getter for ticket validity
+    def get_validity(self):
+        return self.validity
+
+    # Setter for ticket validity
+    def set_validity(self, validity):
+        self.validity = validity
+
+    # Getter for ticket discount
+    def get_discount(self):
+        return self.discount
+
+    # Setter for ticket discount
+    def set_discount(self, discount):
+        self.discount = discount
+
+    # Displays ticket details
+    def display_details(self):
+        print(f"Ticket ID: {self.ticket_ID}, Type: {self.type}, Price: {self.price}, Validity: {self.validity}, Discount: {self.discount}")
+
+    # Calculates the discounted price of the ticket
+    def calculate_discounted_price(self):
+        return self.price - (self.price * self.discount / 100)
+
+
+# Administrator class represents an admin managing tickets and operations
+class Administrator:
+    def __init__(self, admin_ID, name, email):
+        # Initialize administrator details
+        self.admin_ID = admin_ID
+        self.name = name
+        self.email = email
+        self.managed_tickets = []  # List of tickets managed by the admin
+
+    # Getter for admin ID
+    def get_admin_id(self):
+        return self.admin_ID
+
+    # Setter for admin ID
+    def set_admin_id(self, admin_id):
+        self.admin_ID = admin_id
+
+    # Getter for admin name
+    def get_name(self):
+        return self.name
+
+    # Setter for admin name
+    def set_name(self, name):
+        self.name = name
+
+    # Getter for admin email
+    def get_email(self):
+        return self.email
+
+    # Setter for admin email
+    def set_email(self, email):
+        self.email = email
+
+    # Displays administrator details
+    def display_details(self):
+        print(f"Admin ID: {self.admin_ID}, Name: {self.name}, Email: {self.email}")
+
+    # Adds a ticket to the list of managed tickets
+    def add_ticket(self, ticket):
+        self.managed_tickets.append(ticket)
+
+
+# Payment class represents payments made for reservations
+class Payment:
+    def __init__(self, payment_ID, reservation_ID, amount, payment_method, payment_date):
+        # Initialize payment details
+        self.payment_ID = payment_ID
+        self.reservation_ID = reservation_ID  # Associated reservation ID
+        self.amount = amount  # Payment amount
+        self.payment_method = payment_method  # Payment method (e.g., credit card, cash)
+        self.payment_date = payment_date  # Date of payment
+
+    # Getter for payment ID
+    def get_payment_id(self):
+        return self.payment_ID
+
+    # Setter for payment ID
+    def set_payment_id(self, payment_id):
+        self.payment_ID = payment_id
+
+    # Getter for reservation ID
+    def get_reservation_id(self):
+        return self.reservation_ID
+
+    # Setter for reservation ID
+    def set_reservation_id(self, reservation_id):
+        self.reservation_ID = reservation_id
+
+    # Getter for payment amount
+    def get_amount(self):
+        return self.amount
+
+    # Setter for payment amount
+    def set_amount(self, amount):
+        self.amount = amount
+
+    # Getter for payment date
+    def get_payment_date(self):
+        return self.payment_date
+
+    # Setter for payment date
+    def set_payment_date(self, date):
+        self.payment_date = date
+
+    # Displays payment details
+    def display_details(self):
+        print(f"Payment ID: {self.payment_ID}, Reservation ID: {self.reservation_ID}, Amount: {self.amount}, Method: {self.payment_method}, Date: {self.payment_date}")
+
+    # Processes the payment
+    def process_payment(self):
+        print("Processing payment...")
+
+
+# CreditCard class extends Payment for credit card-specific payments
+class CreditCard(Payment):
+    def __init__(self, payment_ID, reservation_ID, amount, payment_method, payment_date, card_number, expiry_date, cvv):
+        # Initialize payment details along with credit card-specific attributes
+        super().__init__(payment_ID, reservation_ID, amount, payment_method, payment_date)
+        self.card_number = card_number
+        self.expiry_date = expiry_date
+        self.cvv = cvv
+
+    # Displays credit card payment details
+    def display_details(self):
+        super().display_details()
+        print(f"Credit Card Number: {self.card_number}, Expiry Date: {self.expiry_date}, CVV: {self.cvv}")
+
+    # Validates the credit card
+    def validate_card(self):
+        print("Validating credit card...")
+
+
+# DebitCard class extends Payment for debit card-specific payments
+class DebitCard(Payment):
+    def __init__(self, payment_ID, reservation_ID, amount, payment_method, payment_date, card_number, expiry_date, cvv):
+        # Initialize payment details along with debit card-specific attributes
+        super().__init__(payment_ID, reservation_ID, amount, payment_method, payment_date)
+        self.card_number = card_number
+        self.expiry_date = expiry_date
+        self.cvv = cvv
+
+    # Displays debit card payment details
+    def display_details(self):
+        super().display_details()
+        print(f"Debit Card Number: {self.card_number}, Expiry Date: {self.expiry_date}, CVV: {self.cvv}")
+
+    # Validates the debit card
+    def validate_card(self):
+        print("Validating debit card...")
+
+
+# Discount class handles discounts applicable to tickets
+class Discount:
+    def __init__(self, discount_ID, ticket_type, discount_percentage, validity_period, conditions):
+        # Initialize discount details
+        self.discount_ID = discount_ID
+        self.ticket_type = ticket_type  # Type of ticket the discount applies to
+        self.discount_percentage = discount_percentage  # Discount percentage
+        self.validity_period = validity_period  # Validity period of the discount
+        self.conditions = conditions  # Conditions for the discount
+
+    # Getter for discount ID
+    def get_discount_id(self):
+        return self.discount_ID
+
+    # Setter for discount ID
+    def set_discount_id(self, discount_id):
+        self.discount_ID = discount_id
+
+    # Getter for ticket type
+    def get_ticket_type(self):
+        return self.ticket_type
+
+    # Setter for ticket type
+    def set_ticket_type(self, ticket_type):
+        self.ticket_type = ticket_type
+
+    # Getter for discount percentage
+    def get_discount_percentage(self):
+        return self.discount_percentage
+
+    # Setter for discount percentage
+    def set_discount_percentage(self, percentage):
+        self.discount_percentage = percentage
+
+    # Getter for validity period
+    def get_validity_period(self):
+        return self.validity_period
+
+    # Setter for validity period
+    def set_validity_period(self, period):
+        self.validity_period = period
+
+    # Getter for conditions
+    def get_conditions(self):
+        return self.conditions
+
+    # Setter for conditions
+    def set_conditions(self, conditions):
+        self.conditions = conditions
+
+    # Displays discount details
+    def display_details(self):
+        print(f"Discount ID: {self.discount_ID}, Type: {self.ticket_type}, Percentage: {self.discount_percentage}, Validity: {self.validity_period}, Conditions: {self.conditions}")
+
+    # Applies the discount to a given price
+    def apply_discount(self, price):
+        return price - (price * self.discount_percentage / 100)
+
+    # Checks if the discount is still valid
+    def is_valid(self, current_date):
+        print(f"Checking if discount is valid for date {current_date}...")
+        # Placeholder logic
+
+
+# ThemePark class represents a theme park
+class ThemePark:
+    def __init__(self, name, location, opening_hours, closing_hours):
+        # Initialize theme park details
+        self.name = name
+        self.location = location
+        self.opening_hours = opening_hours
+        self.closing_hours = closing_hours
+
+    # Displays theme park details
+    def display_details(self):
+        print(f"Theme Park: {self.name}, Location: {self.location}")
+
+    # Displays working hours of the theme park
+    def display_working_hours(self):
+        print(f"Opening Hours: {self.opening_hours}, Closing Hours: {self.closing_hours}")
+
+# Creating a Guest object
+guest_1 = Guest("G001", "Mansour Al-Basha", "mansour@example.com", "123-456-7890")
+guest_1.display_details()
+
+# Creating a Ticket object
+ticket_1 = Ticket("T001", "VIP Pass", 120.00, "2024-12-31", 15)
+ticket_1.display_details()
+
+# Creating a Reservation object (Composition relationship with Guest)
+reservation_1 = Reservation("R001", guest_1, ticket_1, "2024-12-15", "Confirmed")
+guest_1.add_reservation(reservation_1)  # Adding the reservation to the guest's list
+reservation_1.display_details()
+
+# Creating an Administrator object and assigning the ticket (Aggregation relationship)
+admin_1 = Administrator("A001", "Admin Mansour", "admin.mansour@example.com")
+admin_1.add_ticket(ticket_1)  # Aggregating ticket with the admin
+admin_1.display_details()
+
+# Creating a Payment object with inheritance for CreditCard
+credit_card_payment = CreditCard("P001", "R001", 102.00, "Credit Card", "2024-12-05", "1234567890123456", "12/26", "123")
+credit_card_payment.display_details()
+credit_card_payment.process_payment()
+
+# Testing Discount
+discount_1 = Discount("D001", "VIP Pass", 20, "2024-12-31", "Valid for December bookings")
+discounted_price = discount_1.apply_discount(ticket_1.get_price())
+print(f"Original Price: {ticket_1.get_price()}, Discounted Price: {discounted_price}")
+
+# Testing Theme Park object
+theme_park = ThemePark("Mansour's Adventure Land", "Riyadh", "09:00 AM", "10:00 PM")
+theme_park.display_details()
+theme_park.display_working_hours()
+
+# Creating a Payment object with inheritance for DebitCard
+debit_card_payment = DebitCard(
+    payment_ID="P002",
+    reservation_ID="R001",
+    amount=95.00,
+    payment_method="Debit Card",
+    payment_date="2024-12-05",
+    card_number="9876543210987654",
+    expiry_date="01/27",
+    cvv="456"
+)
+debit_card_payment.display_details()
+debit_card_payment.process_payment()
+debit_card_payment.validate_card()
+
+# Creating a Guest object
+guest_2 = Guest("G002", "Sara Al-Faisal", "sara@example.com", "987-654-3210")
+guest_2.display_details()
+
+# Creating a Ticket object
+ticket_2 = Ticket("T002", "Family Pass", 200.00, "2024-12-31", 10)
+ticket_2.display_details()
+
+# Creating a Reservation object (Composition relationship with Guest)
+reservation_2 = Reservation("R002", guest_2, ticket_2, "2024-12-20", "Pending")
+guest_2.add_reservation(reservation_2)  # Adding the reservation to the guest's list
+reservation_2.display_details()
+
+# Creating an Administrator object and assigning the ticket (Aggregation relationship)
+admin_2 = Administrator("A002", "Admin Sara", "admin.sara@example.com")
+admin_2.add_ticket(ticket_2)  # Aggregating ticket with the admin
+admin_2.display_details()
+
+# Creating a Payment object with inheritance for CreditCard
+credit_card_payment_2 = CreditCard("P003", "R002", 180.00, "Credit Card", "2024-12-06", "6543210987654321", "11/27", "321")
+credit_card_payment_2.display_details()
+credit_card_payment_2.process_payment()
+
+# Testing Discount
+discount_2 = Discount("D002", "Family Pass", 25, "2024-12-31", "Valid for December purchases")
+discounted_price_2 = discount_2.apply_discount(ticket_2.get_price())
+print(f"Original Price: {ticket_2.get_price()}, Discounted Price: {discounted_price_2}")
+
+# Testing Theme Park object
+theme_park_2 = ThemePark("Sara's Fun World", "Jeddah", "10:00 AM", "11:00 PM")
+theme_park_2.display_details()
+theme_park_2.display_working_hours()
+
+# Creating a Payment object with inheritance for DebitCard
+debit_card_payment_2 = DebitCard(
+    payment_ID="P004",
+    reservation_ID="R002",
+    amount=160.00,
+    payment_method="Debit Card",
+    payment_date="2024-12-06",
+    card_number="1122334455667788",
+    expiry_date="02/28",
+    cvv="654"
+)
+debit_card_payment_2.display_details()
+debit_card_payment_2.process_payment()
+debit_card_payment_2.validate_card()
