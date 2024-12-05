@@ -1,0 +1,287 @@
+import tkinter as tk
+from tkinter import ttk, messagebox, simpledialog
+import pickle
+
+# File paths
+USER_DATA_FILE = "user_data.pkl"
+CUSTOMER_DATA_FILE = "customer_data.pkl"
+ORDER_DATA_FILE = "order_data.pkl"
+TICKETS_FILE = "tickets_data.pkl"
+SALES_DATA_FILE = "sales_data.pkl"
+
+# Initialize or load data
+try:
+    with open(USER_DATA_FILE, 'rb') as f:
+        user_data = pickle.load(f)
+except (FileNotFoundError, EOFError):
+    user_data = {"users": {}, "admins": {}}
+
+try:
+    with open(CUSTOMER_DATA_FILE, 'rb') as f:
+        customer_data = pickle.load(f)
+except (FileNotFoundError, EOFError):
+    customer_data = {}
+
+try:
+    with open(ORDER_DATA_FILE, 'rb') as f:
+        order_data = pickle.load(f)
+except (FileNotFoundError, EOFError):
+    order_data = {}
+
+try:
+    with open(TICKETS_FILE, 'rb') as f:
+        tickets_data = pickle.load(f)
+except (FileNotFoundError, EOFError):
+    tickets_data = {
+        "Single-Day Pass": {"price": 50, "validity": "1 day", "features": "Access to all rides", "discount": 0},
+        "Multi-Day Pass": {"price": 120, "validity": "3 days", "features": "Access to all rides and events", "discount": 20},
+        "Group Discount Pass": {"price": 200, "validity": "1 day", "features": "Up to 5 people, access to all rides", "discount": 15},
+    }
+
+try:
+    with open(SALES_DATA_FILE, 'rb') as f:
+        sales_data = pickle.load(f)
+except (FileNotFoundError, EOFError):
+    sales_data = {"daily_sales": {}}
+
+# Save data to files
+def save_data(file_path, data):
+    with open(file_path, 'wb') as f:
+        pickle.dump(data, f)
+
+# Payment Interface
+def payment_interface(ticket_type, discount_price):
+    payment_window = tk.Toplevel(root)
+    payment_window.title("Payment Interface")
+
+    tk.Label(payment_window, text=f"Paying for: {ticket_type}", font=("Helvetica", 14, "bold")).pack(pady=10)
+    tk.Label(payment_window, text=f"Amount: ${discount_price:.2f}", font=("Helvetica", 12)).pack(pady=5)
+
+    tk.Label(payment_window, text="Choose a Payment Method:", font=("Helvetica", 12, "bold")).pack(pady=10)
+
+    # Variable to store selected payment method
+    payment_method = tk.StringVar(value="Credit Card")
+
+    # Radio buttons for payment method selection
+    tk.Radiobutton(payment_window, text="Credit Card", variable=payment_method, value="Credit Card").pack(anchor="w", padx=20)
+    tk.Radiobutton(payment_window, text="Debit Card", variable=payment_method, value="Debit Card").pack(anchor="w", padx=20)
+
+    # Payment Details Submission
+    def submit_payment():
+        selected_method = payment_method.get()
+        card_number = card_number_entry.get()
+        cvv = cvv_entry.get()
+        expiry_date = expiry_date_entry.get()
+
+        # Validate card number
+        if not card_number or not card_number.isdigit() or len(card_number) != 16:
+            messagebox.showerror("Error", "Invalid card number. Card number must be exactly 16 digits.")
+            return
+
+        # Validate CVV
+        if not cvv.isdigit() or len(cvv) != 3:
+            messagebox.showerror("Error", "Invalid CVV. Enter a 3-digit CVV.")
+            return
+
+        # Validate expiry date format (MM/YY)
+        try:
+            month, year = map(int, expiry_date.split('/'))
+            if not (1 <= month <= 12):
+                messagebox.showerror("Error", "Invalid expiry date: Month must be between 01 and 12.")
+                return
+            if not (0 <= year <= 99):  # Simplified validation for YY format
+                messagebox.showerror("Error", "Invalid expiry date: Year must be a two-digit number.")
+                return
+        except ValueError:
+            messagebox.showerror("Error", "Invalid expiry date format. Use MM/YY format.")
+            return
+
+        # Process the payment (Simulated here)
+        messagebox.showinfo(
+            "Payment Successful",
+            f"Payment of ${discount_price:.2f} for {ticket_type} was successful using {selected_method}!"
+        )
+        payment_window.destroy()
+
+    # Card Payment Form
+    tk.Label(payment_window, text="Enter your Card Details:", font=("Helvetica", 12, "bold")).pack(pady=5)
+    tk.Label(payment_window, text="Card Number:").pack()
+    card_number_entry = tk.Entry(payment_window)
+    card_number_entry.pack()
+
+    tk.Label(payment_window, text="CVV:").pack()
+    cvv_entry = tk.Entry(payment_window, show="*")
+    cvv_entry.pack()
+
+    tk.Label(payment_window, text="Expiry Date (MM/YY):").pack()
+    expiry_date_entry = tk.Entry(payment_window)
+    expiry_date_entry.pack()
+
+    # Payment Button
+    tk.Button(payment_window, text="Submit Payment", command=submit_payment).pack(pady=15)
+    tk.Button(payment_window, text="Cancel", command=payment_window.destroy).pack(pady=5)
+
+# Admin Dashboard
+def admin_dashboard():
+    admin_window = tk.Toplevel(root)
+    admin_window.title("Admin Dashboard")
+
+    # Display Ticket Sales
+    def view_ticket_sales():
+        if not sales_data.get("daily_sales") or len(sales_data["daily_sales"]) == 0:
+            messagebox.showinfo("Ticket Sales", "No tickets have been sold yet.")
+            return
+        sales_report = "\n".join(
+            f"• {ticket}: {count} sold" for ticket, count in sales_data["daily_sales"].items()
+        )
+        messagebox.showinfo("Ticket Sales", f"Tickets Sold:\n\n{sales_report}")
+
+    # Modify Discounts
+    def modify_discounts():
+        for ticket_type in tickets_data.keys():
+            new_discount = simpledialog.askinteger(
+                "Modify Discount",
+                f"Set discount for {ticket_type} (current: {tickets_data[ticket_type]['discount']}%)",
+                minvalue=0,
+                maxvalue=100,
+            )
+            if new_discount is not None:
+                tickets_data[ticket_type]["discount"] = new_discount
+        save_data(TICKETS_FILE, tickets_data)
+        messagebox.showinfo("Success", "Discounts updated successfully!")
+
+    # Buttons for admin options
+    tk.Button(admin_window, text="View Ticket Sales", command=view_ticket_sales).pack(pady=5)
+    tk.Button(admin_window, text="Modify Discounts", command=modify_discounts).pack(pady=5)
+    tk.Button(admin_window, text="Close", command=admin_window.destroy).pack(pady=5)
+
+# User Dashboard
+def user_interface(customer_id):
+    user_window = tk.Toplevel(root)
+    user_window.title("User Dashboard")
+
+    # Create Tabs
+    notebook = ttk.Notebook(user_window)
+    notebook.pack(expand=1, fill="both")
+
+    # Tickets Tab
+    tickets_tab = ttk.Frame(notebook)
+    notebook.add(tickets_tab, text="Tickets")
+
+    def purchase_ticket(ticket_type):
+        ticket = tickets_data[ticket_type]
+        discount_price = ticket["price"] * (1 - ticket["discount"] / 100)
+
+        # Open Payment Interface
+        payment_interface(ticket_type, discount_price)
+
+        # Update order data and sales data (handled after payment)
+        order_id = f"O{len(order_data) + 1:03d}"
+        order_data[order_id] = {"customer_id": customer_id, "tickets": ticket_type}
+        save_data(ORDER_DATA_FILE, order_data)
+
+        sales_data["daily_sales"].setdefault(ticket_type, 0)
+        sales_data["daily_sales"][ticket_type] += 1
+        save_data(SALES_DATA_FILE, sales_data)
+
+    for ticket_type, ticket_info in tickets_data.items():
+        original_price = ticket_info['price']
+        discount_percentage = ticket_info['discount']
+        discounted_price = original_price * (1 - discount_percentage / 100)
+
+        tk.Label(tickets_tab, text=f"Ticket Type: {ticket_type}", font=("Helvetica", 12, "bold")).pack(pady=5)
+        tk.Label(tickets_tab, text=f"Original Price: ${original_price:.2f}").pack()
+        tk.Label(tickets_tab, text=f"Discount: {discount_percentage}%").pack()
+        tk.Label(tickets_tab, text=f"Price After Discount: ${discounted_price:.2f}", font=("Helvetica", 10, "italic")).pack()
+        tk.Label(tickets_tab, text=f"Features: {ticket_info['features']}").pack(pady=5)
+        tk.Button(tickets_tab, text=f"Buy {ticket_type}", command=lambda t=ticket_type: purchase_ticket(t)).pack(pady=10)
+
+    # User Customization Tab
+    user_tab = ttk.Frame(notebook)
+    notebook.add(user_tab, text="User Customization")
+
+    def add_user():
+        user_id = simpledialog.askstring("Add User", "Enter User ID:")
+        if not user_id or user_id in customer_data:
+            messagebox.showerror("Error", "User ID is invalid or already exists!")
+            return
+        name = simpledialog.askstring("Add User", "Enter User Name:")
+        email = simpledialog.askstring("Add User", "Enter User Email:")
+        customer_data[user_id] = {"name": name, "email": email}
+        save_data(CUSTOMER_DATA_FILE, customer_data)
+        messagebox.showinfo("Success", "User added successfully!")
+
+    def delete_user():
+        user_id = simpledialog.askstring("Delete User", "Enter User ID:")
+        if not user_id or user_id not in customer_data:
+            messagebox.showerror("Error", "User ID not found!")
+            return
+        del customer_data[user_id]
+        save_data(CUSTOMER_DATA_FILE, customer_data)
+        messagebox.showinfo("Success", "User deleted successfully!")
+
+    def modify_user():
+        user_id = simpledialog.askstring("Modify User", "Enter User ID:")
+        if not user_id or user_id not in customer_data:
+            messagebox.showerror("Error", "User ID not found!")
+            return
+        name = simpledialog.askstring("Modify User", "Enter New Name:")
+        email = simpledialog.askstring("Modify User", "Enter New Email:")
+        if name:
+            customer_data[user_id]["name"] = name
+        if email:
+            customer_data[user_id]["email"] = email
+        save_data(CUSTOMER_DATA_FILE, customer_data)
+        messagebox.showinfo("Success", "User modified successfully!")
+
+    def display_users():
+        if not customer_data:
+            messagebox.showinfo("Users", "No users found.")
+            return
+        users = "\n".join(
+            f"• ID: {uid}, Name: {info['name']}, Email: {info['email']}" for uid, info in customer_data.items()
+        )
+        messagebox.showinfo("Users", f"List of Users:\n\n{users}")
+
+    tk.Button(user_tab, text="Add User", command=add_user).pack(pady=5)
+    tk.Button(user_tab, text="Delete User", command=delete_user).pack(pady=5)
+    tk.Button(user_tab, text="Modify User", command=modify_user).pack(pady=5)
+    tk.Button(user_tab, text="Display Users", command=display_users).pack(pady=5)
+
+# Login/Register Functions
+def login():
+    username = simpledialog.askstring("Login", "Enter Username:")
+    password = simpledialog.askstring("Login", "Enter Password:", show="*")
+    if username in user_data['admins'] and user_data['admins'][username] == password:
+        messagebox.showinfo("Admin Login Successful", f"Welcome, Admin {username}!")
+        admin_dashboard()
+    elif username in user_data['users'] and user_data['users'][username] == password:
+        messagebox.showinfo("Login Successful", f"Welcome, {username}!")
+        user_interface(username)
+    else:
+        messagebox.showerror("Login Failed", "Invalid username or password.")
+
+def register():
+    username = simpledialog.askstring("Register", "Enter Username:")
+    if username in user_data['users'] or username in user_data['admins']:
+        messagebox.showerror("Error", "User already exists!")
+        return
+    password = simpledialog.askstring("Register", "Enter Password:", show="*")
+    is_admin = messagebox.askyesno("Admin Registration", "Are you an admin?")
+    if is_admin:
+        user_data['admins'][username] = password
+    else:
+        user_data['users'][username] = password
+    save_data(USER_DATA_FILE, user_data)
+    messagebox.showinfo("Registration Successful", f"Account created successfully as {'Admin' if is_admin else 'User'}!")
+
+# Main Application
+root = tk.Tk()
+root.title("Account and Ticket Management System")
+
+tk.Label(root, text="Welcome to the Ticket System", font=("Helvetica", 16, "bold")).pack(pady=10)
+tk.Button(root, text="Login", command=login).pack(fill=tk.X, pady=5)
+tk.Button(root, text="Register", command=register).pack(fill=tk.X, pady=5)
+tk.Button(root, text="Exit", command=root.destroy).pack(fill=tk.X, pady=5)
+
+root.mainloop()
