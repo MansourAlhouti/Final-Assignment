@@ -1,0 +1,97 @@
+from Final_Assignment_Code Import *
+
+# Creating a Guest object
+guest_1 = Guest("G001", "Mansour Al-Basha", "mansour@example.com", "123-456-7890")
+guest_1.display_details()
+
+# Creating a Ticket object
+ticket_1 = Ticket("T001", "VIP Pass", 120.00, "2024-12-31", 15)
+ticket_1.display_details()
+
+# Creating a Reservation object (Composition relationship with Guest)
+reservation_1 = Reservation("R001", guest_1, ticket_1, "2024-12-15", "Confirmed")
+guest_1.add_reservation(reservation_1)  # Adding the reservation to the guest's list
+reservation_1.display_details()
+
+# Creating an Administrator object and assigning the ticket (Aggregation relationship)
+admin_1 = Administrator("A001", "Admin Mansour", "admin.mansour@example.com")
+admin_1.add_ticket(ticket_1)  # Aggregating ticket with the admin
+admin_1.display_details()
+
+# Creating a Payment object with inheritance for CreditCard
+credit_card_payment = CreditCard("P001", "R001", 102.00, "Credit Card", "2024-12-05", "1234567890123456", "12/26", "123")
+credit_card_payment.display_details()
+credit_card_payment.process_payment()
+
+# Testing Discount
+discount_1 = Discount("D001", "VIP Pass", 20, "2024-12-31", "Valid for December bookings")
+discounted_price = discount_1.apply_discount(ticket_1.get_price())
+print(f"Original Price: {ticket_1.get_price()}, Discounted Price: {discounted_price}")
+
+# Testing Theme Park object
+theme_park = ThemePark("Mansour's Adventure Land", "Riyadh", "09:00 AM", "10:00 PM")
+theme_park.display_details()
+theme_park.display_working_hours()
+
+# Creating a Payment object with inheritance for DebitCard
+debit_card_payment = DebitCard(
+    payment_ID="P002",
+    reservation_ID="R001",
+    amount=95.00,
+    payment_method="Debit Card",
+    payment_date="2024-12-05",
+    card_number="9876543210987654",
+    expiry_date="01/27",
+    cvv="456"
+)
+debit_card_payment.display_details()
+debit_card_payment.process_payment()
+debit_card_payment.validate_card()
+
+# Creating a Guest object
+guest_2 = Guest("G002", "Sara Al-Faisal", "sara@example.com", "987-654-3210")
+guest_2.display_details()
+
+# Creating a Ticket object
+ticket_2 = Ticket("T002", "Family Pass", 200.00, "2024-12-31", 10)
+ticket_2.display_details()
+
+# Creating a Reservation object (Composition relationship with Guest)
+reservation_2 = Reservation("R002", guest_2, ticket_2, "2024-12-20", "Pending")
+guest_2.add_reservation(reservation_2)  # Adding the reservation to the guest's list
+reservation_2.display_details()
+
+# Creating an Administrator object and assigning the ticket (Aggregation relationship)
+admin_2 = Administrator("A002", "Admin Sara", "admin.sara@example.com")
+admin_2.add_ticket(ticket_2)  # Aggregating ticket with the admin
+admin_2.display_details()
+
+# Creating a Payment object with inheritance for CreditCard
+credit_card_payment_2 = CreditCard("P003", "R002", 180.00, "Credit Card", "2024-12-06", "6543210987654321", "11/27", "321")
+credit_card_payment_2.display_details()
+credit_card_payment_2.process_payment()
+
+# Testing Discount
+discount_2 = Discount("D002", "Family Pass", 25, "2024-12-31", "Valid for December purchases")
+discounted_price_2 = discount_2.apply_discount(ticket_2.get_price())
+print(f"Original Price: {ticket_2.get_price()}, Discounted Price: {discounted_price_2}")
+
+# Testing Theme Park object
+theme_park_2 = ThemePark("Sara's Fun World", "Jeddah", "10:00 AM", "11:00 PM")
+theme_park_2.display_details()
+theme_park_2.display_working_hours()
+
+# Creating a Payment object with inheritance for DebitCard
+debit_card_payment_2 = DebitCard(
+    payment_ID="P004",
+    reservation_ID="R002",
+    amount=160.00,
+    payment_method="Debit Card",
+    payment_date="2024-12-06",
+    card_number="1122334455667788",
+    expiry_date="02/28",
+    cvv="654"
+)
+debit_card_payment_2.display_details()
+debit_card_payment_2.process_payment()
+debit_card_payment_2.validate_card()
